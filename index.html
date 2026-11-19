@@ -2577,7 +2577,7 @@ CHARS.forEach(o=>{const g=o.가면;if(!g)return;const W=`${o.이름} 파일 · �
   MASK[o.id]={brk:(g.깨는증거||[]).map(n=>rid(n,W+" · 깨는증거")).filter(Boolean),line:g.깨짐||"",rel:g.관계,cs:g.알리바이,d1:g.지목1,
     idk:g.모른다,who:g.누가,acc:!!g.지목시깨짐,auto:(g.찾으면||[]).map(n=>rid(n,W+" · 찾으면")).filter(Boolean),ans:Object.fromEntries(Object.entries(g.대사||{}).map(([n,a])=>[rid(n,W+" · 대사"),conv(a,W)]).filter(x=>x[0]))};});
 CHARS.forEach(o=>{const B=o.벗은뒤;if(!B||!MASK[o.id])return;const W=`${o.이름} 파일 · 벗은뒤`;
-  Object.entries(B).forEach(([n,a])=>{if(VKEYS.includes(n))return;const id=rid(n,W);if(!id)return;const c=CM[id];c.ans=c.ans||{};
+  Object.entries(B).forEach(([n,a])=>{if(VKEYS.includes(n))return;const id=rid(n,W);if(!id)return;const c=CM[id];c.ans=c.ans||{};(MASK[o.id].pb=MASK[o.id].pb||{})[id]=1;
     if(MASK[o.id].ans[id]===undefined&&c.ans[o.id]!==undefined)MASK[o.id].ans[id]=c.ans[o.id];c.ans[o.id]=conv(a,W);
     [].concat(c.ans[o.id]).forEach(x=>{if(x&&x.g&&!CLOC[x.g])CLOC[x.g]=CLOC[id]})});});
 const GOS={};
@@ -2679,7 +2679,7 @@ function ask(id,who){
   if(c.rb&&who===c.to){const r=resolveAns(c.rb.t);if(r.t){rb=[c.rb.p,r.t,0,null,1,R];if(r.g&&!has(r.g)){S.found.push(r.g);rb[3]=r.g;}}}
   if(c.u&&who===c.u.o&&c.u.r<=R&&!(S.attr[id]&&c.ans&&c.ans[who]!==undefined)){t=c.u.y;yes=true;S.attr[id]=who;}
   else if(masked(who)&&MASK[who].brk.includes(id)){S.mask[who]=1;brk=1;
-    const r=c.ans&&c.ans[who]!==undefined?resolveAns(c.ans[who]):{t:""};t=MASK[who].line+(r.t?"\n\n"+r.t:"");
+    const post=MASK[who].ans[id]!==undefined||!!(MASK[who].pb||{})[id];const r=c.ans&&c.ans[who]!==undefined?resolveAns(c.ans[who]):{t:""};t=MASK[who].line+(post&&r.t?"\n\n"+r.t:"");
     if(r.g&&!has(r.g)){S.found.push(r.g);gave=r.g;}(r.g2||[]).forEach(x=>{if(!has(x))S.found.push(x)});(r.own||[]).forEach(x=>{if(!S.attr[x]){S.attr[x]=who;if(x===id)yes=true;}});}
   else if(masked(who)&&MASK[who].ans[id]!==undefined){const r=resolveAns(MASK[who].ans[id]);t=r.t;if(r.g&&!has(r.g)){S.found.push(r.g);gave=r.g;}(r.g2||[]).forEach(x=>{if(!has(x))S.found.push(x)});}
   else if(c.ans&&c.ans[who]!==undefined){const r=resolveAns(c.ans[who]);t=r.t;if(r.g&&!has(r.g)){S.found.push(r.g);gave=r.g;}(r.g2||[]).forEach(x=>{if(!has(x))S.found.push(x)});
